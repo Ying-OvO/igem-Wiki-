@@ -1,7 +1,5 @@
 <img width="912" alt="截屏2024-08-31 15 12 12" src="https://github.com/user-attachments/assets/ed9b5d5d-3371-490f-b5db-8a71ab2307dd"># 太空冒险 (Space Adventure)
 
-![Uploading mian.png…]()
-
 ## 游戏介绍
 
 太空冒险是一个基于 Python 和 Pygame 开发的简单而有趣的 2D 太空射击游戏。玩家控制一艘火箭，在充满危险的太空中航行，躲避陨石并收集各种道具。
@@ -41,3 +39,31 @@
 - Pygame 2.x
 
 ## 文件结构
+rocket/
+│
+├── test.py # 主游戏文件
+├── README.md # 游戏说明文档
+├── image/ # 游戏图片资源
+│ ├── bg.png
+│ ├── rocket.png
+│ ├── meteor.png
+│ └── ...
+│
+└── music/ # 游戏音频资源
+├── bg.mp3
+├── coin.mp3
+└── ...
+
+## 贡献
+
+欢迎提出建议和改进意见！如果您想为这个项目做出贡献，请 fork 本仓库，创建您的特性分支，提交更改，并发送 pull request。
+
+## 许可
+
+本项目采用 MIT 许可证。详情请见 [LICENSE](LICENSE) 文件。
+
+## 联系方式
+
+如果您有任何问题或建议，请通过 [GitHub Issues](https://github.com/yourusername/rocket/issues) 与我联系。
+
+祝您游戏愉快！
