@@ -28,7 +28,8 @@ image_dir = os.path.join(current_dir, 'image')
 music_dir = os.path.join(current_dir, 'music')
 
 # 定义需要加载的图片文件列表
-image_files = ['bg.png', 'rocket.png', 'meteor.png', 'coin.png', 'fuel_blue.png', 'fuel_red.png', 'fuel_orange.png', 'fuel_purple.png']
+image_files = ['bg.png', 'rocket.png', 'meteor.png', 'coin.png',
+    'fuel_blue.png', 'fuel_red.png', 'fuel_orange.png', 'fuel_purple.png']
 
 # 检查所有图片文件是否存在
 for image_file in image_files:
@@ -47,8 +48,10 @@ try:
     coin_img = pygame.image.load(os.path.join(image_dir, 'coin.png'))
     fuel_blue_img = pygame.image.load(os.path.join(image_dir, 'fuel_blue.png'))
     fuel_red_img = pygame.image.load(os.path.join(image_dir, 'fuel_red.png'))
-    fuel_orange_img = pygame.image.load(os.path.join(image_dir, 'fuel_orange.png'))
-    fuel_purple_img = pygame.image.load(os.path.join(image_dir, 'fuel_purple.png'))
+    fuel_orange_img = pygame.image.load(
+        os.path.join(image_dir, 'fuel_orange.png'))
+    fuel_purple_img = pygame.image.load(
+        os.path.join(image_dir, 'fuel_purple.png'))
 except pygame.error as e:
     print(f"加载图片时出错：{e}")
     pygame.quit()
@@ -76,37 +79,189 @@ except pygame.error as e:
     pygame.quit()
     sys.exit(1)
 
+'''
+↓↓↓↓↓↓↓↓↓↓ Place you need to edit ↓↓↓↓↓↓↓↓↓↓
+'''
+
 # 火箭类
+
+
 class Rocket:
     def __init__(self):
-        # 初始化火箭的位置、速度和状态
-        self.x = WIDTH // 2  # 初始x坐标（屏幕中央）
-        self.y = HEIGHT - 50  # 初始y坐标（屏幕底部上方50像素）
-        self.speed = 5  # 移动速度
-        self.invincible = False  # 无敌状态
-        self.invincible_time = 0  # 无敌状态开始时间
-        self.double_score = False  # 双倍得分状态
-        self.double_score_time = 0  # 双倍得分状态开始时间
+        """
+        初始化火箭对象，设置其初始位置、速度和状态。包括x坐标、y坐标、移动速度、无敌状态、无敌状态开始时间、双倍得分状态和双倍得分状态开始时间。
+
+        其中，x和y坐标表示火箭在屏幕上的初始位置，speed表示火箭的移动速度，invincible表示是否处于无敌状态，invincible_time表示无敌状态开始的时间（初始化为0），double_score表示是否处于双倍得分状态，double_score_time表示双倍得分状态开始的时间（初始化为0）。
+
+        初始x坐标位于屏幕中央，初始y坐标位于屏幕底部上方50像素。
+        """
+        self.x = WIDTH // 2
+        self.y = HEIGHT - 50
+        self.speed = 5
+        self.invincible = False
+        self.invincible_time = 0
+        self.double_score = False
+        self.double_score_time = 0
 
     def move(self, dx, dy):
-        # 移动火箭，并确保不超出屏幕边界
-        self.x = max(0, min(WIDTH - 40, self.x + dx * self.speed))
-        self.y = max(0, min(HEIGHT - 60, self.y + dy * self.speed))
+        """
+        移动火箭，并确保不超出屏幕边界，并与宽保持40像素距离，与高保持60像素距离。
+
+        参数:
+            dx (int): 水平方向移动的距离
+            dy (int): 垂直方向移动的距离
+        """
+        self.x += dx
+        self.y += dy
+
+        # 确保火箭不超出屏幕边界
+        self.x = max(40, min(self.x, WIDTH - 40))
+        self.y = max(60, min(self.y, HEIGHT - 60))
 
     def draw(self):
-        # 绘制火箭
-        screen.blit(rocket_img, (self.x, self.y))
-        # 如果处于无敌状态，绘制一个橙色圆圈
-        if self.invincible:
-            pygame.draw.circle(screen, ORANGE, (int(self.x + 20), int(self.y + 30)), 30, 2)
+        """
+        在屏幕上绘制火箭并管理其视觉效果
 
+        此方法负责在屏幕上显示火箭的图像。如果火箭处于无敌状态，
+        它还会在火箭周围绘制一个橙色的圆圈。无敌状态通过self.invincible属性来表示。
+
+        注意:
+            此方法需要被定期调用，以便火箭在游戏循环中正确显示和更新。
+        """
+        # 在屏幕上绘制火箭图像
+        screen.blit(rocket_img, (self.x, self.y))
+
+        # 如果火箭处于无敌状态，绘制橙色圆圈
+        if self.invincible:
+            invincible_radius = 40  # 无敌状态圆圈的半径
+            pygame.draw.circle(screen, ORANGE, (self.x + 20,
+                               self.y + 30), invincible_radius, 2)
+
+# 道具类
+
+
+class PowerUp:
+    def __init__(self, type):
+         """
+        初始化道具的位置、速度和类型。
+
+        其中，初始x坐标随机，初始y走镖位于屏幕顶部上方，speed表示陨石的移动速度，type表示道具类型。
+
+        参数:
+            type (int): 道具的类型，包含：
+
+            - "coin": 金币，增加10分
+
+            - "slow_time": 减速，使游戏时间变慢
+
+            - "speed_up": 加速，使游戏速度加快
+
+            - "invincible": 无敌，使游戏角色无敌
+
+            - "double_score": 双倍得分，使游戏得分加倍
+        返回:
+            无
+        """
+        self.type = type
+        self.x = random.randint(0, WIDTH - 20)
+        self.y = -20
+        self.speed = 2
+
+    def move(self):
+        """
+        移动道具（向下）
+
+        参数:
+            无
+
+        返回:
+            无
+
+        注意:
+            此方法需要被定期调用，以便道具在游戏循环中正确显示和更新。
+        """
+        self.y += self.speed
+
+
+    def draw(self):
+        """
+        绘制当前道具对象到屏幕上
+
+        根据道具的类型（`type`）属性，选择对应的图像资源，并将其绘制在屏幕上的指定位置（由`self.x`和`self.y`决定）。
+
+        参数：
+            无
+
+        返回：
+            无
+        """
+        if self.type == "double_score":
+            screen.blit(coin_img, (self.x, self.y))
+        elif self.type == "invincible":
+            screen.blit(fuel_blue_img, (self.x, self.y))
+
+# 消息类
+class Message:
+    def __init__(self, text, color):
+        """
+        初始化消息对象
+
+        其中，文本（text）和颜色（color）是用于显示消息的文本内容和颜色， start_time 用于记录消息的显示时间，duration 用于设置消息的持续时间（以毫秒为单位）。
+
+        参数:
+            text (str): 消息文本
+            color (tuple): 消息颜色(RGB元组)
+
+        初始化消息的文本、颜色和显示时间。
+        """
+        self.text = text
+        self.color = color
+        self.start_time = pygame.time.get_ticks()
+        self.duration = 3000  # 消息持续时间为3秒
+
+    def draw(self, screen):
+        """
+        绘制消息到屏幕上
+
+        参数:
+            screen (Surface): 要绘制消息的屏幕对象
+
+        返回:
+            None
+        """
+        font = pygame.font.Font(None, 36)
+        text_surface = font.render(self.text, True, self.color)
+        text_rect = text_surface.get_rect(center=(WIDTH // 2, HEIGHT // 2))
+        screen.blit(text_surface, text_rect)
+
+"""
+TODO: Have a try! Write the code below on your own, or try to think about how to ask AI to complete. Remeber to delete `pass` to run your code.
+"""
 # 陨石类
 class Meteor:
     def __init__(self):
+        pass
         # 初始化陨石的位置和速度
-        self.x = random.randint(0, WIDTH - 30)  # 随机x坐标
-        self.y = -30  # 初始y坐标（屏幕顶部上方）
-        self.speed = random.uniform(1, 3)  # 随机下落速度
+        # ↓↓↓↓↓ Your code here ↓↓↓↓↓
+
+        # ↑↑↑↑↑ Your code here ↑↑↑↑↑
+        
+        # 随机x坐标
+        # ↓↓↓↓↓ Your code here ↓↓↓↓↓
+        self.x = random.randint(0, WIDTH - 20)
+        # ↑↑↑↑↑ Your code here ↑↑↑↑↑
+        
+        # 初始y坐标（屏幕顶部上方）
+        # ↓↓↓↓↓ Your code here ↓↓↓↓↓
+        self.y = -20
+        # ↑↑↑↑↑ Your code here ↑↑↑↑↑
+        
+        # 随机下落速度
+        # ↓↓↓↓↓ Your code here ↓↓↓↓↓
+        self.speed = random.randint(2, 5)
+        # ↑↑↑↑↑ Your code here ↑↑↑↑↑
+
+        
 
     def move(self):
         # 移动陨石（向下）
@@ -116,47 +271,9 @@ class Meteor:
         # 绘制陨石
         screen.blit(meteor_img, (self.x, self.y))
 
-# 道具类
-class PowerUp:
-    def __init__(self, type):
-        # 初始化道具的位置、速度和类型
-        self.x = random.randint(0, WIDTH - 20)  # 随机x坐标
-        self.y = -20  # 初始y坐标（屏幕顶部上方）
-        self.speed = 2  # 下落速度
-        self.type = type  # 道具类型
-
-    def move(self):
-        # 移动道具（向下）
-        self.y += self.speed
-
-    def draw(self):
-        # 根据道具类型绘制不同的图像
-        if self.type == "coin":
-            screen.blit(coin_img, (self.x, self.y))
-        elif self.type == "slow_time":
-            screen.blit(fuel_blue_img, (self.x, self.y))
-        elif self.type == "speed_up":
-            screen.blit(fuel_red_img, (self.x, self.y))
-        elif self.type == "invincible":
-            screen.blit(fuel_orange_img, (self.x, self.y))
-        elif self.type == "double_score":
-            screen.blit(fuel_purple_img, (self.x, self.y))
-
-# 消息类
-class Message:
-    def __init__(self, text, color):
-        # 初始化消息的文本、颜色和显示时间
-        self.text = text
-        self.color = color
-        self.start_time = pygame.time.get_ticks()
-        self.duration = 2000  # 消息显示2秒
-
-    def draw(self, screen):
-        # 在屏幕顶部绘制消息
-        font = pygame.font.Font(None, 36)
-        text_surface = font.render(self.text, True, self.color)
-        text_rect = text_surface.get_rect(center=(WIDTH//2, 50))
-        screen.blit(text_surface, text_rect)
+'''
+↑↑↑↑↑↑↑↑↑↑ Place you need to edit ↑↑↑↑↑↑↑↑↑↑
+'''
 
 # 绘制按钮函数
 def draw_button(screen, text, x, y, width, height, normal_color, hover_color):
