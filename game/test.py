@@ -29,7 +29,7 @@ music_dir = os.path.join(current_dir, 'music')
 
 # 定义需要加载的图片文件列表
 image_files = ['bg.png', 'rocket.png', 'meteor.png', 'coin.png',
-    'fuel_blue.png', 'fuel_red.png', 'fuel_orange.png', 'fuel_purple.png']
+               'fuel_blue.png', 'fuel_red.png', 'fuel_orange.png', 'fuel_purple.png']
 
 # 检查所有图片文件是否存在
 for image_file in image_files:
@@ -142,28 +142,8 @@ class Rocket:
 
 class PowerUp:
     def __init__(self, type):
-         """
-        初始化道具的位置、速度和类型。
-
-        其中，初始x坐标随机，初始y走镖位于屏幕顶部上方，speed表示陨石的移动速度，type表示道具类型。
-
-        参数:
-            type (int): 道具的类型，包含：
-
-            - "coin": 金币，增加10分
-
-            - "slow_time": 减速，使游戏时间变慢
-
-            - "speed_up": 加速，使游戏速度加快
-
-            - "invincible": 无敌，使游戏角色无敌
-
-            - "double_score": 双倍得分，使游戏得分加倍
-        返回:
-            无
-        """
         self.type = type
-        self.x = random.randint(0, WIDTH - 20)
+        self.x = random.randint(0, 780)
         self.y = -20
         self.speed = 2
 
@@ -171,17 +151,10 @@ class PowerUp:
         """
         移动道具（向下）
 
-        参数:
-            无
-
-        返回:
-            无
-
         注意:
             此方法需要被定期调用，以便道具在游戏循环中正确显示和更新。
         """
         self.y += self.speed
-
 
     def draw(self):
         """
@@ -189,11 +162,6 @@ class PowerUp:
 
         根据道具的类型（`type`）属性，选择对应的图像资源，并将其绘制在屏幕上的指定位置（由`self.x`和`self.y`决定）。
 
-        参数：
-            无
-
-        返回：
-            无
         """
         if self.type == "double_score":
             screen.blit(coin_img, (self.x, self.y))
@@ -201,6 +169,8 @@ class PowerUp:
             screen.blit(fuel_blue_img, (self.x, self.y))
 
 # 消息类
+
+
 class Message:
     def __init__(self, text, color):
         """
@@ -234,10 +204,13 @@ class Message:
         text_rect = text_surface.get_rect(center=(WIDTH // 2, HEIGHT // 2))
         screen.blit(text_surface, text_rect)
 
+
 """
 TODO: Have a try! Write the code below on your own, or try to think about how to ask AI to complete. Remeber to delete `pass` to run your code.
 """
 # 陨石类
+
+
 class Meteor:
     def __init__(self):
         pass
@@ -245,23 +218,21 @@ class Meteor:
         # ↓↓↓↓↓ Your code here ↓↓↓↓↓
 
         # ↑↑↑↑↑ Your code here ↑↑↑↑↑
-        
+
         # 随机x坐标
         # ↓↓↓↓↓ Your code here ↓↓↓↓↓
         self.x = random.randint(0, WIDTH - 20)
         # ↑↑↑↑↑ Your code here ↑↑↑↑↑
-        
+
         # 初始y坐标（屏幕顶部上方）
         # ↓↓↓↓↓ Your code here ↓↓↓↓↓
         self.y = -20
         # ↑↑↑↑↑ Your code here ↑↑↑↑↑
-        
+
         # 随机下落速度
         # ↓↓↓↓↓ Your code here ↓↓↓↓↓
         self.speed = random.randint(2, 5)
         # ↑↑↑↑↑ Your code here ↑↑↑↑↑
-
-        
 
     def move(self):
         # 移动陨石（向下）
@@ -271,11 +242,14 @@ class Meteor:
         # 绘制陨石
         screen.blit(meteor_img, (self.x, self.y))
 
+
 '''
 ↑↑↑↑↑↑↑↑↑↑ Place you need to edit ↑↑↑↑↑↑↑↑↑↑
 '''
 
 # 绘制按钮函数
+
+
 def draw_button(screen, text, x, y, width, height, normal_color, hover_color):
     # 获取鼠标位置和点击状态
     mouse = pygame.mouse.get_pos()
@@ -288,7 +262,7 @@ def draw_button(screen, text, x, y, width, height, normal_color, hover_color):
             return True
     else:
         pygame.draw.rect(screen, normal_color, (x, y, width, height))
-    
+
     # 绘制按钮文本
     small_font = pygame.font.Font(None, 32)
     text_surf = small_font.render(text, True, WHITE)
@@ -297,16 +271,18 @@ def draw_button(screen, text, x, y, width, height, normal_color, hover_color):
     return False
 
 # 显示游戏结束界面
+
+
 def show_game_over(screen, score, time):
     # 设置字体
     font = pygame.font.Font(None, 64)
     small_font = pygame.font.Font(None, 32)
-    
+
     # 渲染文本
     game_over_text = font.render("Game Over", True, WHITE)
     score_text = small_font.render(f"Score: {score}", True, WHITE)
     time_text = small_font.render(f"Time: {time}s", True, WHITE)
-    
+
     # 设置按钮位置和大小
     button_width, button_height = 200, 50
     restart_button_x = WIDTH//2 - button_width - 20
@@ -321,9 +297,12 @@ def show_game_over(screen, score, time):
 
         # 绘制游戏结束界面
         screen.fill(BLACK)
-        screen.blit(game_over_text, (WIDTH//2 - game_over_text.get_width()//2, HEIGHT//2 - 100))
-        screen.blit(score_text, (WIDTH//2 - score_text.get_width()//2, HEIGHT//2))
-        screen.blit(time_text, (WIDTH//2 - time_text.get_width()//2, HEIGHT//2 + 40))
+        screen.blit(game_over_text, (WIDTH//2 -
+                    game_over_text.get_width()//2, HEIGHT//2 - 100))
+        screen.blit(
+            score_text, (WIDTH//2 - score_text.get_width()//2, HEIGHT//2))
+        screen.blit(
+            time_text, (WIDTH//2 - time_text.get_width()//2, HEIGHT//2 + 40))
 
         # 绘制重启和退出按钮
         if draw_button(screen, "Restart", restart_button_x, buttons_y, button_width, button_height, BLUE, PURPLE):
@@ -332,10 +311,12 @@ def show_game_over(screen, score, time):
             return False
 
         pygame.display.flip()
-    
+
     return False
 
 # 游戏主循环
+
+
 def game_loop():
     # 开始播放背景音乐
     pygame.mixer.music.play(-1)  # -1表示无限循环
@@ -367,7 +348,8 @@ def game_loop():
 
         # 生成道具
         if random.random() < 0.01:
-            powerups.append(PowerUp(random.choice(["coin", "slow_time", "speed_up", "invincible", "double_score"])))
+            powerups.append(PowerUp(random.choice(
+                ["coin", "slow_time", "speed_up", "invincible", "double_score"])))
 
         # 更新陨石位置
         for meteor in meteors[:]:
@@ -386,7 +368,7 @@ def game_loop():
         for meteor in meteors[:]:
             if (abs(meteor.x - rocket.x) < 30 and
                 abs(meteor.y - rocket.y) < 30 and
-                not rocket.invincible):
+                    not rocket.invincible):
                 fail_sound.play()  # 播放失败音效
                 pygame.mixer.music.stop()  # 停止背景音乐
                 elapsed_time = (pygame.time.get_ticks() - start_time) // 1000
@@ -465,6 +447,7 @@ def game_loop():
     pygame.mixer.music.stop()  # 确保在游戏结束时停止背景音乐
     return False
 
+
 def main():
     pygame.init()
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -475,6 +458,7 @@ def main():
         restart = game_loop()
 
     pygame.quit()
+
 
 if __name__ == "__main__":
     main()
